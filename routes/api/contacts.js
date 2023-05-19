@@ -32,7 +32,8 @@ router.get("/:id", async (req, res, next) => {
 
 router.post("/", async (req, res, next) => {
   try {
-    res.json({ message: "template message" });
+    const result = await contactsService.addContact(req.body);
+    res.status(201).json(result);
   } catch (error) {
     next(error);
   }
