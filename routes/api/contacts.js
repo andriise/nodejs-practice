@@ -4,6 +4,8 @@ const router = express.Router();
 
 const contactsService = require("../../models/contacts");
 
+const HttpError = require("../../helpers");
+
 router.get("/", async (req, res, next) => {
   try {
     const result = await contactsService.listContacts();
@@ -20,16 +22,11 @@ router.get("/:id", async (req, res, next) => {
     const { id } = req.params;
     const result = await contactsService.getContactById(id);
     if (!result) {
-      const error = new Error("Not found");
-      error.status = 404;
-      throw error;
+      throw HttpError(404);
     }
     res.json(result);
   } catch (error) {
-    const { status = 500, message = "Server error" } = error;
-    res.status(status).json({
-      message,
-    });
+    next(error);
   }
 });
 
@@ -37,9 +34,7 @@ router.post("/", async (req, res, next) => {
   try {
     res.json({ message: "template message" });
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    next(error);
   }
 });
 
@@ -48,9 +43,7 @@ router.delete("/:contactId", async (req, res, next) => {
     const result = await contactsService.removeContact();
     res.json(result);
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    next(error);
   }
 });
 
@@ -58,9 +51,7 @@ router.put("/:contactId", async (req, res, next) => {
   try {
     res.json({ message: "template message" });
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
-    });
+    next(error);
   }
 });
 
