@@ -15,13 +15,20 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-router.get("/:contactId", async (req, res, next) => {
+router.get("/:id", async (req, res, next) => {
   try {
-    const result = await contactsService.getContactById();
+    const { id } = req.params;
+    const result = await contactsService.getContactById(id);
+    if (!result) {
+      const error = new Error("Not found");
+      error.status = 404;
+      throw error;
+    }
     res.json(result);
   } catch (error) {
-    res.status(500).json({
-      message: "Server error",
+    const { status = 500, message = "Server error" } = error;
+    res.status(status).json({
+      message,
     });
   }
 });
