@@ -1,18 +1,25 @@
-const fs = require("fs/promises");
 const path = require("path");
 const { nanoid } = require("nanoid");
+const mongoose = require("mongoose");
+const HttpError = require("../../helpers");
+
+const contactsSchema = require("../../schemas/contactsSchema");
 
 const contactsPath = path.join(__dirname, "contacts.json");
 
 const listContacts = async () => {
-  const result = await fs.readFile(contactsPath);
-  return JSON.parse(result);
+  const Contact = mongoose.model("Contact", contactsSchema);
+  const res = await Contact.find();
+  console.log(res);
+  return res;
 };
+
 const getContactById = async (contactId) => {
   const data = await listContacts();
   const result = data.find((item) => item.id === contactId);
   return result || null;
 };
+
 const removeContact = async (contactId) => {
   const data = await listContacts();
   const index = data.findIndex((item) => item.id === contactId);
@@ -23,6 +30,7 @@ const removeContact = async (contactId) => {
   await updateContact(data);
   return result;
 };
+
 const addContact = async (contactDetails) => {
   const data = await listContacts();
   const newContact = {
@@ -33,8 +41,18 @@ const addContact = async (contactDetails) => {
   await updateContact(data);
   return newContact;
 };
-const updateContact = async (contactData) =>
-  await fs.writeFile(contactsPath, JSON.stringify(contactData, null, 2));
+
+const updateContact = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await contactsSchema.findByIdAndUpdate(contactId, req.body, {
+    new: true,
+  });
+
+  if (!result) {
+    throw HttpError(404, `Contact with ${contactId} not found`);
+  }
+  res.json(result);
+};
 
 const updateContactById = async (id, contactData) => {
   const contacts = listContacts();
@@ -44,6 +62,7 @@ const updateContactById = async (id, contactData) => {
   await updateContact(contacts);
   return contacts[index];
 };
+
 module.exports = {
   listContacts,
   getContactById,

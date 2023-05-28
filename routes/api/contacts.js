@@ -3,7 +3,9 @@ const Joi = require("joi");
 
 const router = express.Router();
 
-const contactsService = require("../../models/contacts");
+const contactsService = require("../../models/contacts/contacts");
+
+
 
 const addContactsSchema = Joi.object({
   name: Joi.string().required(),
@@ -79,5 +81,18 @@ router.put("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
+router.patch("/:id/favourite", async (req, res, next) => { 
+  try {
+    const { error } = addContactsSchema.validate(req.body);
+    if (error) {
+      throw HttpError(400, error.message);
+    }
+  } catch (error) {
+    next(error)
+  }
+})
+
+
 
 module.exports = router;
