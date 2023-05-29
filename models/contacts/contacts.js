@@ -1,14 +1,9 @@
-const path = require("path");
 const { nanoid } = require("nanoid");
-const mongoose = require("mongoose");
 const HttpError = require("../../helpers");
 
-const contactsSchema = require("../../schemas/contactsSchema");
-
-const contactsPath = path.join(__dirname, "contacts.json");
+const Contact = require("../../schemas/contactsSchema");
 
 const listContacts = async () => {
-  const Contact = mongoose.model("Contact", contactsSchema);
   const res = await Contact.find();
   console.log(res);
   return res;
@@ -44,7 +39,7 @@ const addContact = async (contactDetails) => {
 
 const updateContact = async (req, res) => {
   const { contactId } = req.params;
-  const result = await contactsSchema.findByIdAndUpdate(contactId, req.body, {
+  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
     new: true,
   });
 
@@ -63,6 +58,17 @@ const updateContactById = async (id, contactData) => {
   return contacts[index];
 };
 
+const updateFavourite = async (id, data) => {
+  const result = await Contact.findByIdAndUpdate(id, data, {
+    new: true,
+  });
+  if (!result) {
+    throw HttpError(404, `Contact with ${id} not found`);
+  }
+  console.log(result);
+  return result;
+};
+
 module.exports = {
   listContacts,
   getContactById,
@@ -70,4 +76,5 @@ module.exports = {
   addContact,
   updateContact,
   updateContactById,
+  updateFavourite,
 };

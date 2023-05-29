@@ -5,8 +5,6 @@ const router = express.Router();
 
 const contactsService = require("../../models/contacts/contacts");
 
-
-
 const addContactsSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
@@ -57,7 +55,7 @@ router.delete("/:id", async (req, res, next) => {
     const { id } = req.params;
     const result = await contactsService.removeContact(id);
     if (!result) {
-      throw HttpError(400)
+      throw HttpError(400);
     }
     res.status(204).json({
       message: "Delete success",
@@ -82,17 +80,18 @@ router.put("/:id", async (req, res, next) => {
   }
 });
 
-router.patch("/:id/favourite", async (req, res, next) => { 
+router.patch("/:id/favourite", async (req, res, next) => {
   try {
+    const { id } = req.params;
+    const result = await contactsService.updateFavourite(id, req.body);
     const { error } = addContactsSchema.validate(req.body);
     if (error) {
-      throw HttpError(400, error.message);
+      throw HttpError(400, "missing field favorite");
     }
+    res.json(result);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
-
-
+});
 
 module.exports = router;

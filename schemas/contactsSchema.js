@@ -14,7 +14,7 @@ const contactsSchema = new mongoose.Schema(
     },
     favorite: {
       type: Boolean,
-      default: false,
+      // default: false,
     },
   },
   {
@@ -23,4 +23,6 @@ const contactsSchema = new mongoose.Schema(
   }
 );
 
-module.exports = contactsSchema;
+const Contact = mongoose.model("Contact", contactsSchema);
+
+module.exports = Contact;
