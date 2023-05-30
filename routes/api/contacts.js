@@ -9,6 +9,7 @@ const addContactsSchema = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
   phone: Joi.string().required(),
+  favourite: Joi.boolean().required(),
 });
 
 const HttpError = require("../../helpers");
@@ -83,8 +84,9 @@ router.put("/:id", async (req, res, next) => {
 router.patch("/:id/favourite", async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await contactsService.updateFavourite(id, req.body);
-    const { error } = addContactsSchema.validate(req.body);
+    const body = req.body;
+    const result = await contactsService.updateFavourite(id, body);
+    const { error } = addContactsSchema.validate(body);
     if (error) {
       throw HttpError(400, "missing field favorite");
     }

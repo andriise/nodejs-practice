@@ -1,11 +1,11 @@
-const { nanoid } = require("nanoid");
 const HttpError = require("../../helpers");
-
+// const { nanoid } = require("nanoid");
 const Contact = require("../../schemas/contactsSchema");
+const { ObjectId } = require("mongodb");
+const objectid = new ObjectId();
 
 const listContacts = async () => {
   const res = await Contact.find();
-  console.log(res);
   return res;
 };
 
@@ -28,25 +28,27 @@ const removeContact = async (contactId) => {
 
 const addContact = async (contactDetails) => {
   const data = await listContacts();
+
   const newContact = {
-    id: nanoid(),
+    _id: objectid,
     ...contactDetails,
   };
+  // console.log(newContact);
   data.push(newContact);
-  await updateContact(data);
+   updateContact(newContact._id, newContact);
   return newContact;
 };
 
-const updateContact = async (req, res) => {
-  const { contactId } = req.params;
-  const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+const updateContact = async (id, body) => {
+  // const { id } = req.find({_id: req.params.id});
+  const result = await Contact.findByIdAndUpdate(id, body, {
     new: true,
   });
 
   if (!result) {
-    throw HttpError(404, `Contact with ${contactId} not found`);
+    throw HttpError(404, `Contact with ${id} not found`);
   }
-  res.json(result);
+  return result;
 };
 
 const updateContactById = async (id, contactData) => {
@@ -65,7 +67,6 @@ const updateFavourite = async (id, data) => {
   if (!result) {
     throw HttpError(404, `Contact with ${id} not found`);
   }
-  console.log(result);
   return result;
 };
 
