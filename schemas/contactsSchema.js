@@ -1,28 +1,9 @@
-const mongoose = require("mongoose");
+const Joi = require("joi");
 
-const contactsSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "Set name for contact"],
-    },
-    email: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    favorite: {
-      type: Boolean,
-      // default: false,
-    },
-  },
-  {
-    versionKey: false,
-    timestamps: true,
-  }
-);
-
-const Contact = mongoose.model("Contact", contactsSchema);
-
-module.exports = Contact;
+const contactsSchema = Joi.object({
+  name: Joi.string().required(),
+  email: Joi.string().required(),
+  phone: Joi.string().required(),
+  favourite: Joi.boolean().required(),
+});
+module.exports = contactsSchema;
