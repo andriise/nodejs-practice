@@ -32,20 +32,6 @@ router.put("/:id", validateBody(contactsSchema), updateContactById);
 
 router.patch("/:id/favourite", updateFavourite);
 
-// async (req, res, next) => {
-//   try {
-//     const { id } = req.params;
-//     console.log(id);
-//     const body = req.body;
-//     const result = await updateFavourite(id, body);
-//     const { error } = contactsSchema.validate(body);
-//     if (error) {
-//       throw HttpError(400, "missing field favorite");
-//     }
-//     res.json(result);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+
 
 module.exports = router;
