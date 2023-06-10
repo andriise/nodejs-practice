@@ -13,7 +13,7 @@ router.get("/current", authenticate, authController.getCurrent);
 router.post("/logout", authenticate, authController.logout);
 
 router.patch(
-  "avatars",
+  "/avatars",
   upload.single("avatar"),
   authenticate,
   authController.updateAvatar
