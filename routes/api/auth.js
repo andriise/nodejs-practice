@@ -12,7 +12,7 @@ router.get("/current", authenticate, authController.getCurrent);
 
 router.post("/logout", authenticate, authController.logout);
 
-router.post(
+router.patch(
   "avatars",
   upload.single("avatar"),
   authenticate,
