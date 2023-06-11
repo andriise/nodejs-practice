@@ -7,6 +7,7 @@ const {
 const router = express.Router();
 const authenticate = require("../../middlewars/authenticate");
 const isValidId = require("../../middlewars/isValidId");
+const upload = require("../../middlewars/upload");
 
 const contactController = require("../../controllers/contacts");
 
@@ -16,7 +17,12 @@ router.get("/", contactController.listContacts);
 
 router.get("/:id", isValidId, contactController.getContactById);
 
-router.post("/", validateBody(contactsSchema), contactController.addContact);
+router.post(
+  "/",
+  upload.single("avatar"),
+  validateBody(contactsSchema),
+  contactController.addContact
+);
 
 router.delete("/:id", isValidId, contactController.removeContact);
 
