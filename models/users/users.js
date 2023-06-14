@@ -1,4 +1,4 @@
-const {Schema, model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 const { handleMongooseError } = require("../../helpers");
 
 const userSchema = new Schema(
@@ -17,8 +17,17 @@ const userSchema = new Schema(
       enum: ["starter", "pro", "business"],
       default: "starter",
     },
-    token: String,
+    token: {
+      type: String,
+    },
     avatarURL: String,
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: {
+      type: String,
+    },
   },
   {
     timestamps: true,
